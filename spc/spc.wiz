@@ -1,0 +1,119 @@
+//------------------------------------------------
+// spc.wiz
+//------------------------------------------------
+
+namespace spc {
+  extern writeonly test @ 0xf0 : u8;
+
+  extern writeonly cnt @ 0xf1 : u8;
+  namespace control {
+    let timer0_enable = 0x01;
+    let timer1_enable = 0x02;
+    let timer2_enable = 0x04;
+    let port01_clear  = 0x10;
+    let port23_clear  = 0x20;
+    let ipl_enable    = 0x80;
+  }
+
+  namespace port {
+    // inputs - 8bits
+    extern const i0 @ 0xf4 : u8;
+    extern const i1 @ 0xf5 : u8;
+    extern const i2 @ 0xf6 : u8;
+    extern const i3 @ 0xf7 : u8;
+    // inputs - 16bits
+    extern const i10 @ 0xf4 : u16;
+    extern const i21 @ 0xf5 : u16;
+    extern const i32 @ 0xf6 : u16;
+
+    // outputs - 8bits
+    extern writeonly o0 @ 0xf4 : u8;
+    extern writeonly o1 @ 0xf5 : u8;
+    extern writeonly o2 @ 0xf6 : u8;
+    extern writeonly o3 @ 0xf7 : u8;
+    // outputs - 16bits
+    extern writeonly o10 @ 0xf4 : u16;
+    extern writeonly o21 @ 0xf5 : u16;
+    extern writeonly o32 @ 0xf6 : u16;
+  }
+
+  namespace timer {
+    extern writeonly t0 @ 0xfa : u8;
+    extern writeonly t1 @ 0xfb : u8;
+    extern writeonly t2 @ 0xfc : u8;
+
+    extern const counter0 @ 0xfd : u8;
+    extern const counter1 @ 0xfe : u8;
+    extern const counter2 @ 0xff : u8;
+
+    let t0hz = 8000;
+    let t1hz = 8000;
+    let t2hz = 64000;
+  }
+
+  namespace dsp {
+    extern var addr @ 0xf2 : u8;
+    extern var data @ 0xf3 : u8;
+    extern var data_and_addr @ 0xf2 : u16;
+
+    struct ch_data {
+      vol_l   : u8,   // x0
+      vol_r   : u8,   // x1
+      pitch   : u16,  // x2
+      srcn    : u8,   // x4
+      adsr0   : u8,   // x5
+      adsr1   : u8,   // x6
+      gain    : u8    // x7
+    }
+
+    namespace channel {
+      let ch0 = 0x00;
+      let ch1 = 0x10;
+      let ch2 = 0x20;
+      let ch3 = 0x30;
+      let ch4 = 0x40;
+      let ch5 = 0x50;
+      let ch6 = 0x60;
+      let ch7 = 0x70;
+    }
+
+    namespace global {
+      // dsp control flags
+      let flags      = 0x6c;
+      let flag_reset = 0x80;
+      let flag_mute  = 0x40;
+      let flag_ecen  = 0x20;
+
+      // volume
+      let mvol_l   = 0x0c;
+      let mvol_r   = 0x1c;
+      let evol_l   = 0x2c;
+      let evol_r   = 0x3c;
+
+      // ch bit memory
+      let key_on   = 0x4c;
+      let key_off  = 0x5c;
+      let endx     = 0x7c;
+      let pmod_on  = 0x2d;
+      let noise_on = 0x3d;
+      let echo_on  = 0x4d;
+
+      // echo
+      let efb      = 0x0d;
+      let esa      = 0x6d;
+      let edl      = 0x7d;
+      let fir      = 0x0f;
+      let fir_0    = 0x0f;
+      let fir_1    = 0x1f;
+      let fir_2    = 0x2f;
+      let fir_3    = 0x3f;
+      let fir_4    = 0x4f;
+      let fir_5    = 0x5f;
+      let fir_6    = 0x6f;
+      let fir_7    = 0x7f;
+
+      // ...
+      let dir = 0x5d;
+    }
+  }
+}

@@ -1,0 +1,78 @@
+//------------------------------------------------
+// io.wiz
+//------------------------------------------------
+
+import "spc";
+import "banks";
+
+namespace io {
+  let ipl_location = 0xffc0 as func();
+
+  #[fallthrough] func execute_command() {
+    a = spc.port.i0;
+    return if zero;
+
+    if a != 0xff {
+      // === NOTE ===
+      // environment-dependent code
+      //   I want to handle it smarter.
+      --a;
+      a <<= 1;
+      x = a;
+      return command_func_table[unaligned x]();
+    }
+
+    // call ipl
+    spc.cnt = (spc.control.ipl_enable | spc.control.port23_clear | spc.control.port01_clear);
+    ^goto ipl_location;
+  }
+
+  const command_func_table : [func()] = [
+    dummy,
+    set_main_volume,
+    switch_stereo_mono,
+  ];
+
+  // ========================================
+  // io commands
+  // ========================================
+
+  #[fallthrough] func set_main_volume() {
+    // L
+    a = spc.dsp.global.mvol_l;
+    y = spc.port.i1;
+    spc.dsp.data_and_addr = ya;
+    // R
+    a = spc.dsp.global.mvol_r;
+    y = spc.port.i2;
+    spc.dsp.data_and_addr = ya;
+    //  ||
+    //  \/
+  }
+  //    ||
+  //    \/
+  func end_of_iocmd() {
+    // wait mpu
+    a = spc.port.i0;
+    spc.port.o0 = a;
+    do {} while a != spc.port.i0;
+
+    // clear port
+    a = (spc.control.port01_clear | spc.control.port23_clear);
+    spc.cnt = a;
+  }
+
+  #[fallthrough] func switch_stereo_mono() {
+    carry = false;
+    a = spc.port.i0;
+    if(!zero){ carry = true; }
+    // TODO: mono bit on
+    goto end_of_iocmd;
+  }
+
+  #[fallthrough] func dummy() {
+    goto end_of_iocmd;
+  }
+
+  const ft = "FT_END";
+}

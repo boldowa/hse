@@ -5,9 +5,6 @@ import "spc";
 import "banks";
 
 namespace init {
-  in zeropage{
-    extern var dp_head @ 0x0000 : [u8;256];
-  }
 
   inline func clear_dp (dp_tail : u8 in x) {
     do {
@@ -17,23 +14,23 @@ namespace init {
   }
 
 
-  let dsp_flag_initial = (spc.dsp.DATA_FLAGS_RESET | spc.dsp.DATA_FLAGS_MUTE | spc.dsp.DATA_FLAGS_ECHO_DISABLE);
+  let dsp_flag_initial = (spc.dsp.global.flag_reset | spc.dsp.global.flag_mute | spc.dsp.global.flag_ecen);
   let end_data = 0xff;
   let mvol = 127;
   const initial_data : [u8] = [
-    spc.dsp.ADDRESS_FLAGS,                    dsp_flag_initial,
-    spc.dsp.ADDRESS_MAIN_VOLUME_L,            mvol,
-    spc.dsp.ADDRESS_MAIN_VOLUME_R,            mvol,
-    spc.dsp.ADDRESS_ECHO_VOLUME_L,            0,
-    spc.dsp.ADDRESS_ECHO_VOLUME_R,            0,
-    spc.dsp.ADDRESS_KEY_ON,                   0,
-    spc.dsp.ADDRESS_KEY_OFF,                  0,
-    spc.dsp.ADDRESS_ECHO_ENABLE,              0,
-    spc.dsp.ADDRESS_NOISE_ENABLE,             0,
-    spc.dsp.ADDRESS_PITCH_MODULATION_ENABLE,  0,
-    spc.dsp.ADDRESS_ECHO_DELAY,               0,
-    spc.dsp.ADDRESS_SOURCE_DIRECTORY_PAGE,    0,
-    spc.dsp.ADDRESS_ECHO_BUFFER_PAGE,         0,
+    spc.dsp.global.flags,    dsp_flag_initial,
+    spc.dsp.global.mvol_l,   mvol,
+    spc.dsp.global.mvol_r,   mvol,
+    spc.dsp.global.evol_l,   0,
+    spc.dsp.global.evol_r,   0,
+    spc.dsp.global.key_on,   0,
+    spc.dsp.global.key_off,  0,
+    spc.dsp.global.echo_on,  0,
+    spc.dsp.global.noise_on, 0,
+    spc.dsp.global.pmod_on,  0,
+    spc.dsp.global.edl,      0,
+    spc.dsp.global.dir,      0,
+    spc.dsp.global.esa,      0,
 
     end_data
   ];
@@ -44,7 +41,7 @@ namespace init {
     while !negative {
       y = a;
       a = initial_data[++x];
-      spc.dsp.data_and_address = ya;
+      spc.dsp.data_and_addr = ya;
       x++;
       a = initial_data[x];
     };

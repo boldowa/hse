@@ -12,6 +12,7 @@ in zeropage {
 }
 
 in prg {
+
   #[fallthrough] func main() {
 
     // init registers
@@ -41,11 +42,29 @@ in prg {
     // TODO: カウンタレジスタクリア
 
     // TODO: メインループ
-    do {
-      nop();
-      stop();
-    } while true;
+    while true {
+      io.execute_command();
+
+      a = spc.timer.counter0;
+      continue if zero;
+
+      // TODO: key on 処理
+
+      // NOTE: ここはカウンタ数値に関わらず１tickに1回としても良いかもしれない
+      do {
+        // TODO: 効果音のカウンタループ
+
+        // TODO: 音楽のカウンタループ
+
+        // TODO: カウンターデクリメント / dbnzループ
+
+      } while true;
+
+      // TODO: Dsp後処理
+    }
   }
+  const strdt = "END_POINT";
 
   import "init";
+  import "io";
 }
