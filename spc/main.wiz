@@ -1,0 +1,51 @@
+//------------------------------------------------
+// main.wiz
+//------------------------------------------------
+
+import "spc";
+import "banks";
+
+config { trim = true }
+
+in zeropage {
+  var pad @ 0 : [u8;0x80];
+}
+
+in prg {
+  #[fallthrough] func main() {
+
+    // init registers
+    interrupt = false;
+    sp = x = 0xff;
+
+    a = 0;
+    direct_page = true;   // pg 1
+    init.clear_dp(0xfb);
+    direct_page = false;   // pg 0
+    init.clear_dp(0xef);
+
+    // direct_page = 0;
+    // x = 0;
+    init.clear_dsp();
+
+    // TODO: シーケンスデータの初期化
+
+    // TODO: dudy比可変波設定
+
+    // TODO: タイマーレジスタ設定
+
+    // TODO: エコーメモリ初期化待ち
+
+    // TODO: SPC Port clear
+
+    // TODO: カウンタレジスタクリア
+
+    // TODO: メインループ
+    do {
+      nop();
+      stop();
+    } while true;
+  }
+
+  import "init";
+}

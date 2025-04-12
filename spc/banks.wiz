@@ -1,0 +1,9 @@
+//------------------------------------------------
+// banks.wiz
+//------------------------------------------------
+import "spc";
+
+bank zeropage @ 0x000 : [vardata; 240];
+bank stackpage @ 0x100 : [vardata; 256];
+bank prg @ 0x200 : [varinitdata; 0xFE00];
+
